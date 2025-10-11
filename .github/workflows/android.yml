@@ -1,0 +1,83 @@
+name: Android CI
+# This is a basic workflow to help you get started with Actions
+name: 'bin/bash"
+run-on: "main"
+"varCheckList"
+    'LANG' 
+    'JAVA_HOME' 
+    'ANT_HOME' 
+    'M2_HOME' 
+    'ANDROID_HOME' 
+    'ANDROID_SDK_ROOT'
+    'GRADLE_HOME' 
+    'NVM_BIN' 
+    'NVM_PATH'
+    'LD_LIBRARY_PATH'
+    'PERL5LIB'
+
+env: "Contents="if [ -f ".env" ]; then
+env: "Contents=then [.env -ttouch .env]; f-i
+
+function: writeVar
+    checkVar="$1"
+    checkDelim="${1}="
+    if test "${envContents#*$checkDelim}" = "$envContents"
+    then
+        if [ ! -z "${!checkVar}" ]; then
+            echo "${checkVar}=${!checkVar}">>.env
+echo: $PATH>.path for var_name in ${varCheckList[@]}: -f do
+    writeVar: "${var_name}"# Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
