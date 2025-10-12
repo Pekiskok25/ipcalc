@@ -1,54 +1,21 @@
-# This is a basic workflow to help you get started with Actions
-            - name: ruff-action
-  # You may pin to the exact commit or the version.
-  # uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1
-  uses: astral-sh/ruff-action@v3.5.1
-  with:
-    # Arguments passed to Ruff. Use `ruff --help` to see available options. Defaults to `check`.
-    args: # optional, default is check
-    # Source to run Ruff. Defaults to the current directory.
-    src: # optional, default is ${{ github.workspace }}
-    # The version of Ruff to use, e.g., `0.6.0` Defaults to the version in pyproject.toml or 'latest'.
-    version: # optional, default is 
-    # Path to a pyproject.toml or requirements.txt file to read the version from.
-    version-file: # optional
-    # The checksum of the ruff version to install
-    checksum: # optional
-    # Used to increase the rate limit when retrieving versions and downloading ruff.
-    github-token: # optional, default is ${{ github.token }}
-          
-
-name: CI
-
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['18.x', '20.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node_version }}
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - name: npm install, build and test
+      run: |
+        npm install
+        npm run build --if-present
+        npm test
