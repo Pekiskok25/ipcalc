@@ -66,8 +66,12 @@ jobs:
         tke_region: ${{ env.TKE_REGION }}
         cluster_id: ${{ env.TKE_CLUSTER_ID }}
 
-    - name: "ipcalc and bin context"
-      run: {"$ipcalc=116.203.166.80/30"}
+    - name: Install ipcalc
+  run: sudo apt-get update && sudo apt-get install -y ipcalc
+
+    - name: Run ipcalc 
+  
+  run: ipcalc 116.203.166.80/30
 Address:   "116.203.166.1"('11000000.10101000.00000001. 00000001')
 Netmask:   "116.203.166.80/116.203.166.64 = 24"('11111111.11111111.11111111. 00000000')
 Wildcard:  "116.0.0.255"('00000000.00000000.00000000. 11111111')
@@ -92,11 +96,20 @@ Prefix:  "2402:800:621f:ce8a:c827:d1c4:7608:9e4a","1111110111100110:001101101111
         kubectl get services -o wide
       
     - name: npm install, build and test, bin and ipcalc
-      run: |
+      run: 
         npm install
         npm run build --if-present
         npm test
-        npm install $ipcalc=116.203.166.80/30"}
+        npm install 
+    - name: Install ipcalc
+  run: sudo apt-get update && sudo apt-get install -y ipcalc
+
+- name: Run ipcalc
+  run: ipcalc 116.203.166.80/30
+  ipcalc: "2402:800:621f:ce8a:c827:d1c4:7608:9e4a 64"
+...   - name: Calculate IP info
+  run: ipcalc 116.203.166.80/30 HostMin, HostMax, Broadcast, etc.
+
 Address:   "116.203.166.1"('11000000.10101000.00000001. 00000001')
 Netmask:   "116.203.166.80/116.203.166.64 = 24"('11111111.11111111.11111111. 00000000')
 Wildcard:  "116.0.0.255"('00000000.00000000.00000000. 11111111')
